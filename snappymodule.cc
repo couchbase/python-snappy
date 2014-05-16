@@ -53,6 +53,10 @@ static struct module_state _state;
 #define PyBytes_AS_STRING PyString_AS_STRING
 #endif
 
+#if (PY_VERSION_HEX < 0x02060000)
+#define Py_SIZE(ob) (((PyVarObject*)(ob))->ob_size)
+#endif
+
 static PyObject *SnappyCompressError,
     *SnappyUncompressError,
     *SnappyInvalidCompressedInputError,
