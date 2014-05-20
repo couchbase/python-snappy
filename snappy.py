@@ -52,7 +52,7 @@ except ImportError:
 
 _CHUNK_MAX = 65536
 _STREAM_TO_STREAM_BLOCK_SIZE = _CHUNK_MAX
-_STREAM_IDENTIFIER = b"sNaPpY"
+_STREAM_IDENTIFIER = "sNaPpY"
 _COMPRESSED_CHUNK = 0x00
 _UNCOMPRESSED_CHUNK = 0x01
 _IDENTIFIER_CHUNK = 0xff
@@ -153,7 +153,7 @@ class StreamCompressor(object):
             out.append(struct.pack("<LL", chunk_type + ((len(chunk) + 4) << 8),
                                    crc))
             out.append(chunk)
-        return b"".join(out)
+        return "".join(out)
 
     def compress(self, data):
         """This method is simply an alias for compatibility with zlib
@@ -192,7 +192,7 @@ class StreamDecompressor(object):
     __slots__ = ["_buf", "_header_found"]
 
     def __init__(self):
-        self._buf = b""
+        self._buf = ""
         self._header_found = False
 
     def decompress(self, data):
@@ -206,7 +206,7 @@ class StreamDecompressor(object):
         uncompressed = []
         while True:
             if len(self._buf) < 4:
-                return b"".join(uncompressed)
+                return "".join(uncompressed)
             chunk_type = struct.unpack("<L", self._buf[:4])[0]
             size = (chunk_type >> 8)
             chunk_type &= 0xff
@@ -220,7 +220,7 @@ class StreamDecompressor(object):
                 raise UncompressError(
                     "stream received unskippable but unknown chunk")
             if len(self._buf) < 4 + size:
-                return b"".join(uncompressed)
+                return "".join(uncompressed)
             chunk, self._buf = self._buf[4:4 + size], self._buf[4 + size:]
             if chunk_type == _IDENTIFIER_CHUNK:
                 if chunk != _STREAM_IDENTIFIER:
@@ -244,9 +244,9 @@ class StreamDecompressor(object):
         decompress() method cannot be called again; the only realistic action
         is to delete the object.
         """
-        if self._buf != b"":
+        if self._buf != "":
             raise UncompressError("chunk truncated")
-        return b""
+        return ""
 
     def copy(self):
         """Returns a copy of the decompression object. This can be used to save
